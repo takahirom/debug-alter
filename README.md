@@ -24,10 +24,10 @@ This is image for implementation.
 
 ### Production code
 
-You can use `@DebugReturn` annotation.
+You can use the `@ DebugReturn` annotation for the method you want to change the return value.
 (You can use this library in Kotlin and Java!)
 
-app/src/**main**/java/com/../MainActivity.java
+app/src/**main**/java/com/../MainActivity.kt
 
 ```kotlin
     class MainActivity : AppCompatActivity() {
@@ -99,7 +99,7 @@ You can confirm Notification and PreferenceFragment implementation in app/ folde
 
 
 ### Advanced usage
-You can use alter key instead of method name for identifying alter item
+You can use the alter key instead of method name for identifying alter item
 
 ```
 @DebugReturn("tutorial")
