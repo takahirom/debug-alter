@@ -14,6 +14,9 @@ import java.util.*
 
 class DebugAlterPlugin : Plugin<Project> {
     override fun apply(project: Project) {
+        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.2")
+        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.2")
+
         project.afterEvaluate {
             applyAfterEvaluate(project)
         }
@@ -45,9 +48,6 @@ class DebugAlterPlugin : Plugin<Project> {
             logger.info("Debug Alter: Skipping AspectJ weaving non-debuggable or test build variant '${variantName}'.")
             return
         }
-
-        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.2")
-        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.2")
 
         createLogDirectoryIfNeeded(project)
 

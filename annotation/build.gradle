@@ -18,8 +18,6 @@ android {
         minSdkVersion 14
         targetSdkVersion 26
     }
-    // Publish for debug and release
-    publishNonDefault true
 }
 
 dependencies {
