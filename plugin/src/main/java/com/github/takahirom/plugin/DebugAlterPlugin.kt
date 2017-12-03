@@ -23,7 +23,7 @@ class DebugAlterPlugin : Plugin<Project> {
         val logger = project.logger
         val extension = project.extensions.findByName("android")
         val android = extension as? AppExtension ?: run {
-            logger.error("DebugAlter plugin should use with android plugin")
+            logger.error("Debug Alter: DebugAlter plugin should use with android plugin")
             return
         }
         // Look for debug build variant
@@ -42,12 +42,12 @@ class DebugAlterPlugin : Plugin<Project> {
                 .isNotEmpty()
 
         if (!variant.buildType.isDebuggable || isTest) {
-            logger.info("Skipping AspectJ weaving non-debuggable or test build variant '${variantName}'.")
+            logger.info("Debug Alter: Skipping AspectJ weaving non-debuggable or test build variant '${variantName}'.")
             return
         }
 
-        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.1")
-        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.1")
+        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.2")
+        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.2")
 
         createLogDirectoryIfNeeded(project)
 
@@ -56,7 +56,7 @@ class DebugAlterPlugin : Plugin<Project> {
         val kotlinTaskName = "compile" + variantName + "Kotlin"
         val kotlinCompileTask: KotlinCompile? = project.tasks.findByName(kotlinTaskName) as? KotlinCompile
         val allClassPath = if (kotlinCompileTask == null) {
-            logger.error("Could not get kotlin task (${kotlinTaskName}) in aspect.gradle")
+            logger.info("Debug Alter: Could not get kotlin task (${kotlinTaskName}) , So we skip kotlin build.")
             project.files(javaCompile.destinationDir,
                     javaCompile.classpath).asPath
         } else {
@@ -66,7 +66,7 @@ class DebugAlterPlugin : Plugin<Project> {
 
 
         javaCompile.doLast {
-            logger.lifecycle("Java file weaving by Debug Alter")
+            logger.lifecycle("Debug Alter: Java file weaving")
 
             val start = System.currentTimeMillis()
             val javaArgs = arrayOf<String>("-showWeaveInfo",
@@ -76,13 +76,13 @@ class DebugAlterPlugin : Plugin<Project> {
                     "-aspectpath", allClassPath,
                     "-d", javaCompile.destinationDir.absolutePath,
                     "-classpath", allClassPath,
-                    "-log", "log/weave.log",
+//                    "-log", "log/weave.log",
                     "-bootclasspath", android.bootClasspath.joinToString("/"))
             weave(project, javaArgs)
 
             val now = System.currentTimeMillis()
 
-            logger.info("Java file weaving took ${now - start} ms")
+            logger.info("Debug Alter: Java file weaving took ${now - start} ms")
         }
 
         if (kotlinCompileTask != null) {
@@ -90,7 +90,7 @@ class DebugAlterPlugin : Plugin<Project> {
             val kotlinClassDirPath = kotlinClassDir.absolutePath
 
             kotlinCompileTask.doLast {
-                logger.lifecycle("Kotlin file weaving by Debug Alter")
+                logger.lifecycle("Debug Alter: Kotlin file weaving")
 
 
                 val start = System.currentTimeMillis()
@@ -101,12 +101,12 @@ class DebugAlterPlugin : Plugin<Project> {
                         "-aspectpath", allClassPath,
                         "-d", kotlinClassDir.toString(),
                         "-classpath", allClassPath,
-                        "-log", "log/weave.log",
+//                        "-log", "log/weave.log",
                         "-bootclasspath", android.bootClasspath.joinToString("/"))
                 weave(project, kotlinArgs)
                 val now = System.currentTimeMillis()
 
-                logger.info("Kotlin file weaving took ${now - start} ms")
+                logger.info("Debug Alter: Kotlin file weaving took ${now - start} ms")
             }
 
         }
@@ -121,7 +121,7 @@ class DebugAlterPlugin : Plugin<Project> {
 
     fun weave(project: Project, args: Array<String>) {
         val handler = MessageHandler(true)
-        project.logger.info("weave args: " + Arrays.toString(args))
+        project.logger.info("Debug Alter: weave args: " + Arrays.toString(args))
         Main().run(args, handler)
 
         handler.getMessages(null, true).forEach { message ->

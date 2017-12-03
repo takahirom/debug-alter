@@ -5,12 +5,16 @@ buildscript {
 //        mavenLocal()
     }
     dependencies {
-        classpath "com.github.takahirom.debug.alter:plugin:${debug_alter_version}"
+        if(!project.hasProperty("release_bintray")) {
+            classpath "com.github.takahirom.debug.alter:plugin:${debug_alter_version}"
+        }
     }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.takahirom.debug.alter'
+if(!project.hasProperty("release_bintray")) {
+    apply plugin: 'com.github.takahirom.debug.alter'
+}
 
 android {
     compileSdkVersion 26

@@ -1,4 +1,4 @@
 #!/bin/sh
-./gradlew annotation:bintrayUpload
-./gradlew library:bintrayUpload
-./gradlew plugin:bintrayUpload
+./gradlew annotation:bintrayUpload -P release_bintray=true
+./gradlew library:bintrayUpload -P release_bintray=true
+./gradlew plugin:bintrayUpload -P release_bintray=true
