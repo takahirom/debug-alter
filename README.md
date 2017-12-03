@@ -135,12 +135,5 @@ latest version : [ ![Download](https://api.bintray.com/packages/takahirom/maven/
 ```gradle
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.takahirom.debug.alter' // add plugin
-```
-
-```gradle
-// For debug, your app depends on debug alter library
-debugImplementation "com.github.takahirom.debug.alter:library:**write latest version here**"
-// For release, your app only depends on annotation
-releaseImplementation "com.github.takahirom.debug.alter:annotation:**write latest version here**"
+apply plugin: 'com.github.takahirom.debug.alter' // add this plugin
 ```

@@ -2,7 +2,7 @@ package com.github.takahirom.library.debug.alter;
 
 /**
  * This class define {@link com.github.takahirom.library.debug.alter.annotation.DebugReturn} method behavior
- * @param <T>
+ * @param <T> Annotated method type
  */
 public abstract class DebugAlterItem<T> {
     public final String key;

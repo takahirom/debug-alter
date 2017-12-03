@@ -46,8 +46,8 @@ class DebugAlterPlugin : Plugin<Project> {
             return
         }
 
-//        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.1")
-//        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:library:0.1")
+        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.1")
+        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.1")
 
         createLogDirectoryIfNeeded(project)
 
@@ -66,7 +66,7 @@ class DebugAlterPlugin : Plugin<Project> {
 
 
         javaCompile.doLast {
-            logger.lifecycle("Java file weaving by AspectJ")
+            logger.lifecycle("Java file weaving by Debug Alter")
 
             val start = System.currentTimeMillis()
             val javaArgs = arrayOf<String>("-showWeaveInfo",
@@ -90,7 +90,7 @@ class DebugAlterPlugin : Plugin<Project> {
             val kotlinClassDirPath = kotlinClassDir.absolutePath
 
             kotlinCompileTask.doLast {
-                logger.lifecycle("Kotlin file weaving by AspectJ")
+                logger.lifecycle("Kotlin file weaving by Debug Alter")
 
 
                 val start = System.currentTimeMillis()
