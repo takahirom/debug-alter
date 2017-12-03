@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="title">
+    <PreferenceCategory android:title="Alter app behavior">
+
+        <CheckBoxPreference
+            android:checked="false"
+            android:key="isSnackbarShowTiming"
+            android:defaultValue="false"
+            android:summary="This option will always show snackbar"
+            android:title="Always show snackbar" />
+        <EditTextPreference
+            android:dialogTitle="Snackbar text"
+            android:key="getSnackbarText"
+            android:defaultValue="bad"
+            android:summary="This option change snackbar text"
+            android:title="Alter snackbar text" />
+        <EditTextPreference
+            android:dialogTitle="java text"
+            android:key="helloworld"
+            android:defaultValue="Hello, world"
+            android:summary="Change hello world java text"
+            android:title="Change hello world java text" />
+    </PreferenceCategory>
+</PreferenceScreen>

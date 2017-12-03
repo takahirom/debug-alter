@@ -1,0 +1,112 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+    }
+}
+group = 'com.github.takahirom.debug.alter'
+version = debug_alter_version
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+    }
+    // Publish for debug and release
+    publishNonDefault true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // AspectJ
+    debugApi 'org.aspectj:aspectjrt:1.8.9'
+    debugImplementation 'com.android.support:support-annotations:27.0.1'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+def siteUrl = 'https://github.com/takahirom/debug-alter'
+def gitUrl = 'https://github.com/takahirom/debug-alter.git'
+
+bintray {
+    user = 'takahirom'
+    key = file(rootProject.file("bintray_key")).text
+
+    configurations = ['archives'] //When uploading configuration files
+    pkg {
+        repo = 'maven'
+        name = "debugalter-annotation"
+        desc = 'Alter Android app behavior without rebuild when debugging.'
+        websiteUrl = siteUrl
+        issueTrackerUrl = 'https://github.com/takahirom/debug-alter/issues'
+        vcsUrl = gitUrl
+        licenses = ['Apache-2.0']
+        labels = ['aar', 'android', 'library', 'plugin']
+        publicDownloadNumbers = true
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'Alter Android app behavior without rebuild when debugging.'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'takahirom'
+                        name 'takahirom'
+                        email 'takam.dev@gmail.com'
+                    }
+                }
+                scm {
+                    connection 'https://github.com/takahirom/debug-alter.git'
+                    developerConnection 'https://github.com/takahirom/debug-alter.git'
+                    url siteUrl
+
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+task findConventions << {
+    println project.getConvention()
+}

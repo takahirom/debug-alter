@@ -1,0 +1,110 @@
+apply plugin: 'kotlin'
+apply plugin: "com.jfrog.bintray"
+apply plugin: 'maven-publish'
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+group = 'com.github.takahirom.debug.alter'
+version = debug_alter_version
+
+dependencies {
+    // Gradle Plugin
+    implementation gradleApi()
+    implementation localGroovy()
+
+    // Android Gradle Plugin
+    compileOnly 'com.android.tools.build:gradle:3.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+    // Kotlin
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+
+    // AspectJ
+    implementation 'org.aspectj:aspectjtools:1.8.9'
+    implementation 'org.aspectj:aspectjweaver:1.8.9'
+}
+buildscript {
+    ext.kotlin_version = '1.1.60'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+repositories {
+    mavenCentral()
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// add javadoc/source jar tasks as artifacts
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+repositories {
+    jcenter()
+}
+
+def siteUrl = 'https://github.com/takahirom/debug-alter'
+def gitUrl = 'https://github.com/takahirom/debug-alter.git'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            if (plugins.hasPlugin('war')) {
+                from components.web
+            } else {
+                from components.java
+            }
+
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+// https://github.com/bintray/bintray-examples/blob/master/gradle-example/build.gradle
+bintray {
+    user = "takahirom" //this usually comes from gradle.properties file in ~/.gradle
+    key = file(rootProject.file("bintray_key")).text
+
+//        configurations = ['deployables'] //When uploading configuration files
+    // - OR -
+    publications = ['mavenJava'] //When uploading Maven-based publication files
+    // - AND/OR -
+//        filesSpec { //When uploading any arbitrary files ('filesSpec' is a standard Gradle CopySpec)
+//            from 'arbitrary-files'
+//            into 'standalone_files/level1'
+//            rename '(.+)\\.(.+)', '$1-suffix.$2'
+//        }
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+    pkg {
+        repo = 'maven'
+        name = "debugalter-plugin"
+        desc = 'Alter Android app behavior without rebuild when debugging.'
+        websiteUrl = siteUrl
+        issueTrackerUrl = 'https://github.com/takahirom/debug-alter/issues'
+        vcsUrl = gitUrl
+        licenses = ['Apache-2.0']
+        labels = ['aar', 'android', 'library', 'plugin']
+        publicDownloadNumbers = true
+    }
+}
