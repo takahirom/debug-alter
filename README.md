@@ -57,7 +57,7 @@ app/src/**main**/java/com/../MainActivity.kt
 
 ### Debug code
 
-Create DebugApplication class
+Create DebugApplication class for setting `@DebugReturn` methods.
 
 app/src/**debug**/AndroidManifest.xml
 
@@ -69,9 +69,9 @@ app/src/**debug**/AndroidManifest.xml
 ```
 
 
-Write bindings between shared preference and method in your DebugApp
+Write bindings between shared preference and method in your DebugApp.
 
-app/src/**debug**/java/com/github/takahirom/debug/alter/sample/DebugApp.kt
+app/src/**debug**/java/.../DebugApp.kt
 
 ```kotlin
 // Extends your main Application classs

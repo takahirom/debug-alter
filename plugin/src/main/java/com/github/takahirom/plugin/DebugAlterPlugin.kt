@@ -14,8 +14,8 @@ import java.util.*
 
 class DebugAlterPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.2")
-        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.2")
+        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.4")
+        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.4")
 
         project.afterEvaluate {
             applyAfterEvaluate(project)

@@ -12,6 +12,9 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+// for kapt debug
+apply plugin: 'kotlin-kapt'
+
 if(!project.hasProperty("release_bintray")) {
     apply plugin: 'com.github.takahirom.debug.alter'
 }
@@ -46,6 +49,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // for kapt debug
+    kapt "com.android.databinding:compiler:3.0.1"
+    kapt "com.google.dagger:dagger-compiler:2.14.1"
 }
 repositories {
     mavenCentral()
