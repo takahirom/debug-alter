@@ -61,7 +61,9 @@ class DebugAlterPlugin : Plugin<Project> {
                     javaCompile.classpath).asPath
         } else {
             project.files(kotlinCompileTask.destinationDir, javaCompile.destinationDir,
-                    javaCompile.classpath).asPath
+                    javaCompile.classpath).filter {
+                it.canonicalPath.contains("play-services-auth").not()
+            }.asPath
         }
 
 
