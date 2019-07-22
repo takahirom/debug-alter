@@ -12,7 +12,7 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
-private const val DEBUG_ALTER_VERSION = "0.3.4"
+private const val DEBUG_ALTER_VERSION = "0.4.0"
 
 class DebugAlterPlugin : Plugin<Project> {
     override fun apply(project: Project) {
