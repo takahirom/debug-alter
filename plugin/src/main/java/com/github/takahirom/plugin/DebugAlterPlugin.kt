@@ -12,10 +12,12 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
+private const val DEBUG_ALTER_VERSION = "0.3.4"
+
 class DebugAlterPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:0.3.4")
-        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:0.3.4")
+        project.dependencies.add("debugImplementation","com.github.takahirom.debug.alter:library:$DEBUG_ALTER_VERSION")
+        project.dependencies.add("releaseImplementation","com.github.takahirom.debug.alter:annotation:$DEBUG_ALTER_VERSION")
 
         project.afterEvaluate {
             applyAfterEvaluate(project)
@@ -55,17 +57,26 @@ class DebugAlterPlugin : Plugin<Project> {
 
         val kotlinTaskName = "compile" + variantName + "Kotlin"
         val kotlinCompileTask: KotlinCompile? = project.tasks.findByName(kotlinTaskName) as? KotlinCompile
-        val allClassPath = if (kotlinCompileTask == null) {
+        val allClassPathFileCandidates = if (kotlinCompileTask == null) {
             logger.info("Debug Alter: Could not get kotlin task (${kotlinTaskName}) , So we skip kotlin build.")
-            project.files(javaCompile.destinationDir,
-                    javaCompile.classpath).asPath
+            project.files(javaCompile.destinationDir, javaCompile.classpath)
         } else {
             project.files(kotlinCompileTask.destinationDir, javaCompile.destinationDir,
-                    javaCompile.classpath).filter {
-                it.canonicalPath.contains("play-services-auth").not()
-            }.asPath
+                javaCompile.classpath)
         }
-
+        logger.info("Debug Alter: allClassPathFileCandidates=" + allClassPathFileCandidates.joinToString(","))
+        val allClassPathFiles = allClassPathFileCandidates
+            .filter {
+                // exclude libraries
+                val canonicalPath = it.canonicalPath
+                canonicalPath.contains("debug/alter") ||
+                    canonicalPath.contains("aspectj") ||
+                    canonicalPath.contains("library-$DEBUG_ALTER_VERSION") ||
+                    canonicalPath.contains("annotation-$DEBUG_ALTER_VERSION") ||
+                    canonicalPath.contains(".gradle/caches").not()
+            }
+        logger.info("Debug Alter: allClassPathFiles=" + allClassPathFiles.joinToString(","))
+        val allClassPath = allClassPathFiles.asPath
 
         javaCompile.doLast {
             logger.lifecycle("Debug Alter: Java file weaving")
@@ -93,7 +104,6 @@ class DebugAlterPlugin : Plugin<Project> {
 
             kotlinCompileTask.doLast {
                 logger.lifecycle("Debug Alter: Kotlin file weaving")
-
 
                 val start = System.currentTimeMillis()
                 // https://www.eclipse.org/aspectj/doc/next/devguide/ajc-ref.html
